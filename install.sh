@@ -2,7 +2,7 @@
 
 # Set the default values for the project, bucket, region and the server version to be installed
 GCP_REGION=us-central1
-SERVER_VERSION=25.3.1
+SERVER_VERSION=25.5.0
 PROJECT_ID=$(gcloud config get-value project)
 BUCKET_NAME=actual-server-$(openssl rand -hex 4)
 

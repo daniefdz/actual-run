@@ -40,7 +40,7 @@ Modify the following values as needed:
 
 ```sh
 GCP_REGION=us-central1
-SERVER_VERSION=25.3.1
+SERVER_VERSION=25.5.0
 PROJECT_ID=$(gcloud config get-value project)
 BUCKET_NAME=actual-server-$(openssl rand -hex 4)
 ```
