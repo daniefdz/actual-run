@@ -40,7 +40,7 @@ Modify the following values as needed:
 
 ```sh
 GCP_REGION=us-central1
-SERVER_VERSION=25.5.0
+SERVER_VERSION=25.10.0
 PROJECT_ID=$(gcloud config get-value project)
 BUCKET_NAME=actual-server-$(openssl rand -hex 4)
 ```
@@ -109,7 +109,7 @@ To update Actual Budget using Cloud Shell, do the following:
 gcloud run deploy <AB_SERVICE> --image <IMAGE_URL>
 ```
   - Replace <AB_SERVICE> with the name of your Actual Budget service. If you followed the instructions in this guide, the service name should be *actual-server*.
-  - Replace <IMAGE_URL> with the relative URL for the Actual Budget version you want to deploy (for example, actualbudget/actual-server:25.5.0). You can see the latest versions [here](https://github.com/actualbudget/actual/releases).
+  - Replace <IMAGE_URL> with the relative URL for the Actual Budget version you want to deploy (for example, actualbudget/actual-server:25.10.0). You can see the latest versions [here](https://github.com/actualbudget/actual/releases).
 
 ✅ The update process might take a minute. If deployed successfully, a success message is displayed and the URL for the deployed service is returned.
 
@@ -122,7 +122,7 @@ To update Actual Budget using the Google Cloud console, do the following:
 3. Under **Services**, click *actual-server*.
 4. On the **Service details** page, click **Edit and deploy a new revision**.
 5. Under **Containers**, make the following changes:
-  - The **Container image url** field shows the relative URL for the deployed image. It is appended with the current version number (e.g. actualbudget/actual-server:25.3.1). In this example, the version number is 25.3.1. Change the version number to the latest version of Actual Budget or whichever version you want to deploy. (e.g. actualbudget/actual-server:25.5.0). You can see the latest versions [here](https://github.com/actualbudget/actual/releases).
+  - The **Container image url** field shows the relative URL for the deployed image. It is appended with the current version number (e.g. actualbudget/actual-server:25.3.1). In this example, the version number is 25.3.1. Change the version number to the latest version of Actual Budget or whichever version you want to deploy. (e.g. actualbudget/actual-server:25.10.0). You can see the latest versions [here](https://github.com/actualbudget/actual/releases).
   - By default, new revisions automatically receive 100% of the traffic. However, if needed, select the checkbox next to **Serve this revision immediately**.
 6. You can leave all other options unchanged.
 7. Click **Deploy**.
