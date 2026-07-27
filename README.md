@@ -51,8 +51,12 @@ You can check the latest release version in the [Actual repo](https://github.com
 ```sh
 gcloud storage buckets create gs://$BUCKET_NAME \
 --location=$GCP_REGION \
+--uniform-bucket-level-access \
+--public-access-prevention \
 --project=$PROJECT_ID
 ```
+
+`--uniform-bucket-level-access` makes IAM the only way into the bucket, by disabling per-object ACLs. `--public-access-prevention` makes it impossible to grant the bucket to `allUsers`, even by mistake. Your budget database lives in this bucket, so both are worth having. Neither affects the service account created below.
 
 ### 4️⃣ Create a Service Account  
 
@@ -70,6 +74,8 @@ gcloud storage buckets add-iam-policy-binding gs://$BUCKET_NAME \
 --role=roles/storage.objectAdmin
 ```
 
+⚠️ A service account created seconds earlier is not usable right away. If this command fails with `Service account ... does not exist`, wait a few seconds and run it again — the account does exist, IAM just has not caught up yet. `roles/storage.objectAdmin` is the correct role; a broader one is not needed.
+
 ### 6️⃣ Deploy the Cloud Run Service  
 
 This command deploys the Actual Budget service, making it publicly accessible while mounting the storage bucket:  
@@ -81,13 +87,16 @@ gcloud run deploy actual-server \
 --port=5006 \
 --service-account=actual-server-sa@$PROJECT_ID.iam.gserviceaccount.com \
 --max-instances=1 \
+--execution-environment=gen2 \
 --add-volume name=gcs-1,type=cloud-storage,bucket=$BUCKET_NAME \
 --add-volume-mount volume=gcs-1,mount-path=/data \
 --region=$GCP_REGION \
 --project=$PROJECT_ID
 ```
 
-### ✅ Retrieve Your Service URL  
+`--execution-environment=gen2` is required for Cloud Storage volume mounts. Cloud Run selects it on its own today, but stating it explicitly keeps the deployment from depending on that default.
+
+⚠️ If this fails with *"The user-provided container failed to start and listen on the port"*, check the Cloud Run logs. A message like `cannot fetch token: ... Received 500` on `/computeMetadata/v1/instance/service-accounts/default/token` means the metadata server cannot mint a token for the service account yet — again propagation, not permissions. Wait a minute and run the same command again. A revision that fails to start never receives traffic, so retrying is safe.
 
 The final command will display the **Actual Budget instance URL**.  
 
